@@ -33,16 +33,21 @@ describe Oystercard do
   end
 
   it 'should be in_jouney when touching in' do
-    card = Oystercard.new
+    card = Oystercard.new(5)
     card.touch_in
     expect(card.in_journey?).to eq true
   end
 
   it 'should be in_jouney when touching in' do
-    card = Oystercard.new
+    card = Oystercard.new(2)
     card.touch_in
     card.touch_out
     expect(card.in_journey?).to eq false
+  end
+
+  it 'raises an error if there is an insufficient balance upon touch_in (£1)' do
+    card = Oystercard.new
+    expect { card.touch_in }.to raise_error "Insufficient funds - less then #{Oystercard::MINIMUM}"
   end
 
 end
