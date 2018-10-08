@@ -13,9 +13,11 @@ describe Oystercard do
 
   it 'has a limit of £90' do
     card = Oystercard.new(90)
-    card.balance
     expect { card.top_up(10) }.to raise_error "Unable to top up, maximum #{Oystercard::LIMIT}"
-
   end
 
+  it "raises an error if balance exceeds limit" do
+  card = Oystercard.new
+  expect { card.top_up(100) }.to raise_error "Unable to top up, maximum #{Oystercard::LIMIT}"
+end
 end
