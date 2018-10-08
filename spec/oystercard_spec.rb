@@ -27,4 +27,22 @@ describe Oystercard do
     expect(card.balance).to eq 5
   end
 
+  it 'should not be in_journey before touching in' do
+    card = Oystercard.new
+    expect(card.in_journey?).to eq false
+  end
+
+  it 'should be in_jouney when touching in' do
+    card = Oystercard.new
+    card.touch_in
+    expect(card.in_journey?).to eq true
+  end
+
+  it 'should be in_jouney when touching in' do
+    card = Oystercard.new
+    card.touch_in
+    card.touch_out
+    expect(card.in_journey?).to eq false
+  end
+
 end
