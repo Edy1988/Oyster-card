@@ -1,4 +1,5 @@
 require 'oystercard'
+require 'entry_station'
 describe Oystercard do
 
   it 'has a balance' do
@@ -34,26 +35,38 @@ describe Oystercard do
 
   it 'should be in_jouney when touching in' do
     card = Oystercard.new(5)
-    card.touch_in
+    card.touch_in(entry_station)
     expect(card.in_journey?).to eq true
   end
 
   it 'should be in_jouney when touching in' do
     card = Oystercard.new(2)
-    card.touch_in
+    card.touch_in(entry_station)
     card.touch_out
     expect(card.in_journey?).to eq false
   end
 
   it 'raises an error if there is an insufficient balance upon touch_in (£1)' do
     card = Oystercard.new
-    expect { card.touch_in }.to raise_error "Insufficient funds - less then #{Oystercard::MINIMUM}"
+    expect { card.touch_in(entry_station) }.to raise_error "Insufficient funds - less then #{Oystercard::MINIMUM}"
   end
 
   it "should reduce the balance by minimum fare when touching out" do
     card = Oystercard.new(2)
-    card.touch_in
+    card.touch_in(entry_station)
     expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM)
+  end
+
+  let(:entry_station) { double :entry_station }
+  it 'should save entry_station when touched in' do
+    card = Oystercard.new(2)
+    allow(card).to receive(:entry_station).and_return(entry_station)
+  end
+  let(:entry_station) { double :entry_station }
+  it 'should forget entry station when you touch out' do
+    card = Oystercard.new
+    allow(card).to receive(:entry_station)
+    expect(card.touch_out).to eq nil
   end
 
 end

@@ -1,0 +1,2 @@
+class EntryStation
+end
