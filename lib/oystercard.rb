@@ -1,9 +1,10 @@
-require_relative 'entry_station'
+require_relative 'station'
 
 class Oystercard
 
   attr_reader :balance
   attr_reader :entry_station
+  attr_reader :exit_station
 
   LIMIT = 90
   MINIMUM = 1
@@ -11,6 +12,7 @@ class Oystercard
   def initialize(balance = 0)
     @balance = balance
     @entry_station = nil
+    @exit_station = exit_station
   end
 
   def top_up(amount)
@@ -29,10 +31,12 @@ class Oystercard
   def touch_in(entry_station)
     raise "Insufficient funds - less then #{MINIMUM}" if @balance < MINIMUM
     @entry_station = entry_station
+    @exit_station = nil
   end
 
-  def touch_out
+  def touch_out(exit_station)
     @balance -= MINIMUM
     @entry_station = nil
+    @exit_station = exit_station
   end
 end

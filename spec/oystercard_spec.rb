@@ -1,5 +1,5 @@
 require 'oystercard'
-require 'entry_station'
+require 'station'
 describe Oystercard do
 
   it 'has a balance' do
@@ -42,7 +42,7 @@ describe Oystercard do
   it 'should be in_jouney when touching in' do
     card = Oystercard.new(2)
     card.touch_in(entry_station)
-    card.touch_out
+    card.touch_out(exit_station)
     expect(card.in_journey?).to eq false
   end
 
@@ -54,7 +54,7 @@ describe Oystercard do
   it "should reduce the balance by minimum fare when touching out" do
     card = Oystercard.new(2)
     card.touch_in(entry_station)
-    expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM)
+    expect { card.touch_out(exit_station) }.to change { card.balance }.by(-Oystercard::MINIMUM)
   end
 
   let(:entry_station) { double :entry_station }
@@ -66,7 +66,23 @@ describe Oystercard do
   it 'should forget entry station when you touch out' do
     card = Oystercard.new
     allow(card).to receive(:entry_station)
-    expect(card.touch_out).to eq nil
+    expect(card.touch_out(exit_station)).to eq exit_station
+  end
+
+  let(:exit_station) { double :exit_station }
+  it 'should save exit_station when touched out' do
+    card = Oystercard.new(2)
+    station = EntryStation.new
+    allow(card.touch_in(station)).to receive(:exit_station).and_return(exit_station)
+  end
+
+  let(:exit_station) { double :exit_station }
+  it 'should forget exit station when you touch in' do
+    card = Oystercard.new(12)
+    station = EntryStation.new
+    card.touch_in(station)
+    allow(card).to receive(:exit_station)
+    expect(card.touch_in(exit_station)).to eq nil
   end
 
 end
