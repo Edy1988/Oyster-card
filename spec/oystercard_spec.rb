@@ -84,5 +84,14 @@ describe Oystercard do
     allow(card).to receive(:exit_station)
     expect(card.touch_in(exit_station)).to eq nil
   end
-
+  let(:journeys) { {entry_station: entry_station, exit_station: exit_station} }
+  it 'stores a journey' do
+    card = Oystercard.new
+    card.top_up(12)
+    entry_station = EntryStation.new
+    card.touch_in(entry_station)
+    exit_station = ExitStation.new
+    card.touch_out(exit_station)
+    expect(card.journey(entry_station, exit_station)).to eq(entry_station=>exit_station)
+  end
 end
